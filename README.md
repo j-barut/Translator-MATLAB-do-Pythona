@@ -34,17 +34,3 @@ Obsługa wbudowanych funkcji: Tłumaczenie kluczowych funkcji wbudowanych MATLAB
 Generacja kodu: Generowanie poprawnego syntaktycznie kodu w języku Python (pliki .py), automatycznie dołączającego niezbędne importy (np. import numpy as np).
 
 Wykonanie kodu (Runtime): Opcjonalne, automatyczne uruchomienie wygenerowanego skryptu po poprawnej translacji i wypisanie wyników na standardowe wyjście (konsola).
-
-## 3. Wymagania niefunkcjonalne
-Język implementacji: Python 3.12+ (ze względu na bogaty ekosystem narzędzi do parsowania i naturalne środowisko docelowe dla generowanego kodu).
-
-Zależności zewnętrzne: Sam proces kompilacji ograniczy się do minimum (np. standardowe biblioteki parsujące). Wygenerowany kod docelowy będzie natomiast wymagał obecności biblioteki numpy w środowisku uruchomieniowym.
-
-Interfejs użytkownika: Interfejs wiersza poleceń (CLI). Program powinien przyjmować ścieżkę do pliku wejściowego .m jako argument wywołania oraz pozwalać na opcjonalne wskazanie lokalizacji dla pliku wynikowego .py.
-
-Obsługa błędów: * Zrozumiałe komunikaty o błędach składniowych (wskazanie linii i znaku w pliku źródłowym MATLABa).
-
-Komunikaty o błędach semantycznych (np. próba użycia nieobsługiwanej w danym podzbiorze funkcji wbudowanej).
-
-## 4. Wybór generatora parserów
-
