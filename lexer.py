@@ -72,10 +72,6 @@ def t_NEWLINE(t):
     t.type = 'SEMI'
     return t
 
-def p_empty(p):
-    'empty :'
-    pass
-
 def t_error(t):
     print(f"Błąd leksykalny: nierozpoznany znak '{t.value[0]}' w linii {t.lexer.lineno}")
     t.lexer.skip(1)

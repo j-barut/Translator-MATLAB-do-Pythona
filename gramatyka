@@ -37,7 +37,7 @@ elseif_clause : ELSEIF expression statement_list
 
 # ---------------- LOOPS ----------------
 
-for_loop : FOR ID ASSIGN expression statement_list END
+for_loop : FOR ID ASSIGN range_expression statement_list END
 
 while_loop : WHILE expression statement_list END
 
@@ -56,7 +56,8 @@ id_list : ID
         | id_list COMMA ID
 
 
-arg_list : expression
+arg_list :
+         | expression
          | arg_list COMMA expression
 
 
@@ -103,8 +104,7 @@ row_list : row
          | row_list SEMI row
 
 
-row : expression
-    | row COMMA expression
+row : expression_list
 
 
 # ---------------- FUNCTION CALL ----------------
