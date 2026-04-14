@@ -1,0 +1,113 @@
+program : statement_list
+
+
+statement_list : statement
+               | statement_list statement
+
+
+statement : assignment
+          | if_statement
+          | for_loop
+          | while_loop
+          | function_declaration
+          | expression_statement
+
+
+expression_statement : expression SEMI
+                     | expression
+
+
+assignment : ID ASSIGN expression SEMI
+           | ID ASSIGN expression
+
+
+# ---------------- IF ----------------
+
+if_statement : IF expression statement_list END
+             | IF expression statement_list ELSE statement_list END
+             | IF expression statement_list elseif_list END
+             | IF expression statement_list elseif_list ELSE statement_list END
+
+
+elseif_list : elseif_list elseif_clause
+            | elseif_clause
+
+elseif_clause : ELSEIF expression statement_list
+
+
+# ---------------- LOOPS ----------------
+
+for_loop : FOR ID ASSIGN expression statement_list END
+
+while_loop : WHILE expression statement_list END
+
+
+# ---------------- FUNCTIONS ----------------
+
+function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN statement_list END
+                     | FUNCTION ID LPAREN arg_list RPAREN statement_list END
+
+
+return_vars : ID
+            | LBRACKET id_list RBRACKET
+
+
+id_list : ID
+        | id_list COMMA ID
+
+
+arg_list : expression
+         | arg_list COMMA expression
+
+
+# ---------------- EXPRESSIONS ----------------
+
+expression : expression PLUS expression
+           | expression MINUS expression
+           | expression MUL expression
+           | expression DOTMUL expression
+           | expression DIV expression
+           | expression DOTDIV expression
+           | expression POW expression
+           | expression DOTPOW expression
+           | expression EQ expression
+           | expression NEQ expression
+           | expression LT expression
+           | expression LE expression
+           | expression GT expression
+           | expression GE expression
+           | MINUS expression %prec UMINUS
+           | expression TRANSPOSE
+           | LPAREN expression RPAREN
+           | matrix
+           | function_call
+           | range_expression
+           | ID
+           | NUMBER
+           | STRING
+
+
+# ---------------- RANGE ----------------
+
+range_expression : expression COLON expression
+                 | expression COLON expression COLON expression
+
+
+# ---------------- MATRIX ----------------
+
+matrix : LBRACKET RBRACKET
+       | LBRACKET row_list RBRACKET
+
+
+row_list : row
+         | row_list SEMI row
+
+
+row : expression
+    | row COMMA expression
+
+
+# ---------------- FUNCTION CALL ----------------
+
+function_call : ID LPAREN arg_list RPAREN
+              | ID LPAREN RPAREN
