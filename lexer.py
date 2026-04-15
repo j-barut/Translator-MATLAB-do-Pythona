@@ -7,6 +7,7 @@ reserved = {
     'elseif': 'ELSEIF',
     'else': 'ELSE',
     'end': 'END',
+    'function': 'FUNCTION'
 }
 
 tokens = [
