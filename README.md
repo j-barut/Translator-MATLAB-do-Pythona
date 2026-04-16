@@ -5,7 +5,7 @@ Temat projektu: Kompilator źródło-źródło (translator) podzbioru języka MA
 
 Autorzy: Justyna Barut, Tomek Chmielowski
 
-Dane kontaktowe: jbarut@student.agh.edu.pl
+Dane kontaktowe: jbarut@student.agh.edu.pl, tchmielowski@student.agh.edu.pl
 
 ## 2. Założenia programu
 Narzędzie to kompilator źródło-źródło, który analizuje podzbiór języka MATLAB (skupiający się na obliczeniach numerycznych i operacjach macierzowych), a następnie tłumaczy go na odpowiednie struktury i wywołania w języku Python.
