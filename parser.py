@@ -4,6 +4,7 @@ from lexer import tokens
 from lexer import lexer
 
 precedence = (
+    ('left', 'COLON'),
     ('left', 'EQ', 'NEQ', 'LT', 'LE', 'GT', 'GE'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MUL', 'DOTMUL',  'DIV', 'DOTDIV'),
@@ -89,18 +90,18 @@ def p_elseif_clause(p):
 # ---------------- LOOPS ----------------
 
 def p_for_loop(p):
-    '''for_loop : FOR ID ASSIGN range_expression statement_list END'''
+    '''for_loop : FOR ID ASSIGN expression statement_list END'''
     p[0] = ('for', p[2], p[4], p[5])
 
-def p_range_expression(p):
-    '''range_expression : expression COLON expression
-                        | expression COLON expression COLON expression'''
-    if len(p) == 4:
-        # start : end
-        p[0] = ('range', p[1], None, p[3])
-    else:
-        # start : step : end
-        p[0] = ('range', p[1], p[3], p[5])
+# def p_range_expression(p):
+#     '''range_expression : expression COLON expression
+#                         | expression COLON expression COLON expression'''
+#     if len(p) == 4:
+#         # start : end
+#         p[0] = ('range', p[1], None, p[3])
+#     else:
+#         # start : step : end
+#         p[0] = ('range', p[1], p[3], p[5])
 
 
 def p_while_loop(p):
@@ -154,66 +155,117 @@ def p_arguments(p):
 
 # ---------------- EXPRESSIONS ----------------
 
-def p_expression_binop(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression MUL expression
-                  | expression DOTMUL expression
-                  | expression DIV expression
-                  | expression DOTDIV expression
-                  | expression POW expression
-                  | expression DOTPOW expression
-                  | expression EQ expression
-                  | expression NEQ expression
-                  | expression LT expression
-                  | expression LE expression
-                  | expression GT expression
-                  | expression GE expression'''
-    p[0] = ('binop', p[2], p[1], p[3])
-
-
-def p_expression_uminus(p):
-    '''expression : MINUS expression %prec UMINUS'''
-    p[0] = ('uminus', p[2])
-
-
-def p_expression_transpose(p):
-    '''expression : expression TRANSPOSE'''
-    p[0] = ('transpose', p[1])
-
-
-def p_expression_group(p):
-    '''expression : LPAREN expression RPAREN'''
-    p[0] = p[2]
-
-
-def p_expression_id(p):
-    '''expression : ID'''
-    p[0] = ('id', p[1])
-
-
-def p_expression_number(p):
-    '''expression : NUMBER'''
-    p[0] = ('number', p[1])
-
-
-def p_expression_string(p):
-    '''expression : STRING'''
-    p[0] = ('string', p[1])
-
-def p_expression_range(p):
-    '''expression : range_expression'''
+def p_expression(p):
+    '''expression : colon_expr'''
     p[0] = p[1]
 
-# ---------------- FUNCTION CALL ----------------
-def p_function_call(p):
-    '''function_call : ID LPAREN arg_list RPAREN'''
-    p[0] = ('call', p[1], p[3])
+
+# ---------- RANGE (:) ----------
+
+def p_colon_expr(p):
+    '''colon_expr : colon_expr COLON colon_expr
+                  | relation'''
+    if len(p) == 4:
+        p[0] = ('range', p[1], None, p[3])
+    else:
+        p[0] = p[1]
 
 
-def p_expression_function_call(p):
-    '''expression : function_call'''
-    p[0] = p[1]
+# ---------- RELATIONS ----------
+
+def p_relation(p):
+    '''relation : relation EQ relation
+                | relation NEQ relation
+                | relation LT relation
+                | relation LE relation
+                | relation GT relation
+                | relation GE relation
+                | additive'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+
+# ---------- ADD / SUB ----------
+
+def p_additive(p):
+    '''additive : additive PLUS additive
+                | additive MINUS additive
+                | multiplicative'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+
+# ---------- MUL / DIV ----------
+
+def p_multiplicative(p):
+    '''multiplicative : multiplicative MUL multiplicative
+                      | multiplicative DOTMUL multiplicative
+                      | multiplicative DIV multiplicative
+                      | multiplicative DOTDIV multiplicative
+                      | power'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+
+# ---------- POW ----------
+
+def p_power(p):
+    '''power : power POW power
+             | power DOTPOW power
+             | unary'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+
+# ---------- UNARY ----------
+
+def p_unary(p):
+    '''unary : MINUS unary %prec UMINUS
+             | postfix'''
+    if len(p) == 3:
+        p[0] = ('uminus', p[2])
+    else:
+        p[0] = p[1]
+
+
+# ---------- TRANSPOSE ----------
+
+def p_postfix(p):
+    '''postfix : postfix TRANSPOSE
+               | primary'''
+    if len(p) == 3:
+        p[0] = ('transpose', p[1])
+    else:
+        p[0] = p[1]
+
+
+# ---------- PRIMARY ----------
+
+def p_primary(p):
+    '''primary : ID
+               | NUMBER
+               | STRING
+               | LPAREN expression RPAREN
+               | matrix'''
+    if len(p) == 2:
+        if isinstance(p[1], int) or isinstance(p[1], float):
+            p[0] = ('number', p[1])
+        elif isinstance(p[1], str) and p.slice[1].type == 'STRING':
+            p[0] = ('string', p[1])
+        elif isinstance(p[1], str):
+            p[0] = ('id', p[1])
+        else:
+            p[0] = p[1]
+    else:
+        p[0] = p[2]
 
 # ---------------- MATRIX ----------------
 def p_matrix(p):
@@ -225,9 +277,9 @@ def p_matrix(p):
         p[0] = ('matrix', p[2])
 
 
-def p_expression_matrix(p):
-    '''expression : matrix'''
-    p[0] = p[1]
+# def p_expression_matrix(p):
+#     '''expression : matrix'''
+#     p[0] = p[1]
 
 def p_row_list(p):
     '''row_list : row
