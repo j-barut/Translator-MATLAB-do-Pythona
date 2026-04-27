@@ -34,6 +34,10 @@ def p_statement(p):
                  | expression_statement'''
     p[0] = p[1]
 
+def p_block(p):
+    'block : statement_list'
+    p[0] = p[1]
+
 def p_expression_statement(p):
     '''expression_statement : expression opt_semi'''
     p[0] = p[1]
@@ -43,36 +47,32 @@ def p_opt_semi(p):
                 | empty'''
     pass
 
+def p_empty(p):
+    'empty :'
+    pass
+
 def p_assignment(p):
     '''assignment : ID ASSIGN expression SEMI
                   | ID ASSIGN expression'''
     p[0] = ('assign', p[1], p[3])
 
-def p_empty(p):
-    'empty :'
-    pass
-
 # ---------------- IF ----------------
 
 def p_if_statement(p):
-    '''if_statement : IF expression statement_list END
-                    | IF expression statement_list ELSE statement_list END
-                    | IF expression statement_list elseif_list END
-                    | IF expression statement_list elseif_list ELSE statement_list END'''
+    '''if_statement : IF expression block END
+                    | IF expression block ELSE block END
+                    | IF expression block elseif_list END
+                    | IF expression block elseif_list ELSE block END'''
     if len(p) == 5:
-        # IF expr stmt_list END
         p[0] = ('if', p[2], p[3], None, None)
 
     elif len(p) == 7:
         if p[4] == 'ELSE':
-            # IF expr stmt_list ELSE stmt_list END
             p[0] = ('if', p[2], p[3], None, p[5])
         else:
-            # IF expr stmt_list elseif_list END
             p[0] = ('if', p[2], p[3], p[4], None)
 
     elif len(p) == 8:
-        # IF expr stmt_list elseif_list ELSE stmt_list END
         p[0] = ('if', p[2], p[3], p[4], p[6])
 
 def p_elseif_list(p):
@@ -84,13 +84,13 @@ def p_elseif_list(p):
         p[0] = p[1] + [p[2]]
 
 def p_elseif_clause(p):
-    '''elseif_clause : ELSEIF expression statement_list'''
+    '''elseif_clause : ELSEIF expression block'''
     p[0] = ('elseif', p[2], p[3])
 
 # ---------------- LOOPS ----------------
 
 def p_for_loop(p):
-    '''for_loop : FOR ID ASSIGN expression statement_list END'''
+    '''for_loop : FOR ID ASSIGN expression block END'''
     p[0] = ('for', p[2], p[4], p[5])
 
 # def p_range_expression(p):
@@ -105,14 +105,14 @@ def p_for_loop(p):
 
 
 def p_while_loop(p):
-    '''while_loop : WHILE expression statement_list END'''
+    '''while_loop : WHILE expression block END'''
     p[0] = ('while', p[2], p[3])
 
 # ---------------- FUNCTIONS ----------------
 
 def p_function_declaration(p):
-    '''function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN statement_list END
-                            | FUNCTION ID LPAREN arg_list RPAREN statement_list END'''
+    '''function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN block END
+                            | FUNCTION ID LPAREN arg_list RPAREN block END'''
     if len(p) == 10:
         # FUNCTION return_vars = ID(args) body END
         p[0] = ('function', p[4], p[6], p[8], p[2])
@@ -307,7 +307,7 @@ def p_expression_list(p):
 
 def p_error(p):
     if p:
-        print(f"Syntax error at '{p.value}'")
+        print(f"Syntax error at token '{p.value}' (type={p.type}) line={p.lineno}")
     else:
         print("Syntax error at EOF")
 
@@ -322,6 +322,5 @@ if __name__ == "__main__":
 
         if not text:
             continue
-
         result = parser.parse(text, lexer=lexer)
         print(result)

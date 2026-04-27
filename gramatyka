@@ -32,12 +32,13 @@ if_statement : IF expression statement_list END
 elseif_list : elseif_list elseif_clause
             | elseif_clause
 
+
 elseif_clause : ELSEIF expression statement_list
 
 
 # ---------------- LOOPS ----------------
 
-for_loop : FOR ID ASSIGN range_expression statement_list END
+for_loop : FOR ID ASSIGN expression statement_list END
 
 while_loop : WHILE expression statement_list END
 
@@ -57,41 +58,78 @@ id_list : ID
 
 
 arg_list :
-         | expression
-         | arg_list COMMA expression
+         | arguments
+
+
+arguments : expression
+          | arguments COMMA expression
 
 
 # ---------------- EXPRESSIONS ----------------
 
-expression : expression PLUS expression
-           | expression MINUS expression
-           | expression MUL expression
-           | expression DOTMUL expression
-           | expression DIV expression
-           | expression DOTDIV expression
-           | expression POW expression
-           | expression DOTPOW expression
-           | expression EQ expression
-           | expression NEQ expression
-           | expression LT expression
-           | expression LE expression
-           | expression GT expression
-           | expression GE expression
-           | MINUS expression %prec UMINUS
-           | expression TRANSPOSE
-           | LPAREN expression RPAREN
-           | matrix
-           | function_call
-           | range_expression
-           | ID
-           | NUMBER
-           | STRING
+expression : colon_expr
 
 
-# ---------------- RANGE ----------------
+# ---------- RANGE (:) ----------
 
-range_expression : expression COLON expression
-                 | expression COLON expression COLON expression
+colon_expr : colon_expr COLON colon_expr
+           | relation
+
+
+# ---------- RELATIONS ----------
+
+relation : relation EQ relation
+         | relation NEQ relation
+         | relation LT relation
+         | relation LE relation
+         | relation GT relation
+         | relation GE relation
+         | additive
+
+
+# ---------- ADD / SUB ----------
+
+additive : additive PLUS additive
+         | additive MINUS additive
+         | multiplicative
+
+
+# ---------- MUL / DIV ----------
+
+multiplicative : multiplicative MUL multiplicative
+               | multiplicative DOTMUL multiplicative
+               | multiplicative DIV multiplicative
+               | multiplicative DOTDIV multiplicative
+               | power
+
+
+# ---------- POW ----------
+
+power : power POW power
+      | power DOTPOW power
+      | unary
+
+
+# ---------- UNARY ----------
+
+unary : MINUS unary
+      | postfix
+
+
+# ---------- TRANSPOSE ----------
+
+postfix : postfix TRANSPOSE
+        | primary
+
+
+# ---------- PRIMARY ----------
+
+primary : ID
+        | NUMBER
+        | STRING
+        | LPAREN expression RPAREN
+        | function_call
+        | matrix
 
 
 # ---------------- MATRIX ----------------
@@ -105,6 +143,10 @@ row_list : row
 
 
 row : expression_list
+
+
+expression_list : expression
+                | expression_list COMMA expression
 
 
 # ---------------- FUNCTION CALL ----------------
