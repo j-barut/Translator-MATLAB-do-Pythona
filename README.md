@@ -3,37 +3,22 @@
 ## 1. Informacje ogólne
 Temat projektu: Kompilator źródło-źródło (translator) podzbioru języka MATLAB do języka Python.
 
-Autorzy: Justyna Barut
-Tomek Chmielowski
+Autorzy: Justyna Barut, Tomek Chmielowski
 
-Ogólne cele programu: Celem projektu jest stworzenie translatora, który pozwala na automatyczną konwersję skryptów napisanych w języku MATLAB na równoważny, wykonywalny kod w języku Python. Program przetłumaczy wejściowy kod (ze szczególnym uwzględnieniem operacji macierzowych) na zoptymalizowany, natywny kod wykorzystujący bibliotekę numpy. Narzędzie ma ułatwić migrację algorytmów numerycznych i naukowych ze środowiska MATLAB do ekosystemu Pythona bez konieczności ręcznego przepisywania całych skryptów.
+Dane kontaktowe: jbarut@student.agh.edu.pl, tchmielowski@student.agh.edu.pl
 
-## 2. Wymagania funkcjonalne
-Analiza leksykalna i składniowa: Program musi poprawnie rozpoznawać tokeny i weryfikować składnię dla obsługiwanego podzbioru języka MATLAB (pliki .m).
+## 2. Założenia programu
+Narzędzie to kompilator źródło-źródło, który analizuje podzbiór języka MATLAB (skupiający się na obliczeniach numerycznych i operacjach macierzowych), a następnie tłumaczy go na odpowiednie struktury i wywołania w języku Python.
 
-Obsługa zmiennych i typów danych: Poprawne rozpoznawanie, deklaracja i przypisywanie wartości do skalarów, wektorów i macierzy.
+Ogólne cele programu: Zapewnienie automatycznej konwersji skryptów MATLABa w celu ułatwienia migracji algorytmów naukowych do ekosystemu Pythona, bez konieczności ręcznego przepisywania całych bloków kodu.
 
-Obsługa operacji arytmetycznych: Rozróżnianie i prawidłowe tłumaczenie operacji macierzowych od operacji tablicowych (element-wise), np.:
+Rodzaj translatora: Kompilator źródło-źródło (transpiler / konwerter).
 
-Mnożenie: * (macierzowe) vs .* (tablicowe)
+Planowany wynik działania programu: Konwerter plików MATLABa (.m) do Pythona (.py). Wynikiem działania będzie wygenerowany, poprawny składniowo plik w języku Python, który automatycznie importuje bibliotekę numpy i wykorzystuje ją do realizacji zadeklarowanych wcześniej operacji macierzowych i tablicowych.
 
-Dzielenie: / vs ./
+Planowany język implementacji: Python 3.12+.
 
-Potęgowanie: ^ vs .^
-
-Transpozycja: '
-
-Obsługa instrukcji sterujących: Translacja podstawowych struktur kontrolnych:
-
-Pętle: for, while
-
-Instrukcje warunkowe: if, elseif, else
-
-Obsługa wbudowanych funkcji: Tłumaczenie kluczowych funkcji wbudowanych MATLABa (np. zeros, ones, eye, disp, length, size) na ich dokładne odpowiedniki w bibliotece numpy lub standardowej bibliotece Pythona.
-
-Generacja kodu: Generowanie poprawnego syntaktycznie kodu w języku Python (pliki .py), automatycznie dołączającego niezbędne importy (np. import numpy as np).
-
-Wykonanie kodu (Runtime): Opcjonalne, automatyczne uruchomienie wygenerowanego skryptu po poprawnej translacji i wypisanie wyników na standardowe wyjście (konsola).
+Sposób realizacji skanera/parsera: Użycie generatora parserów PLY (Python Lex-Yacc), który bazuje na algorytmie LALR(1) i generuje tabele parsowania bezpośrednio w środowisku Pythona, bez konieczności używania zewnętrznych zależności.
 
 ## Tabela Tokenów (Analizator Leksykalny PLY)
 
