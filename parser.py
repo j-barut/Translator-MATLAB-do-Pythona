@@ -258,3 +258,18 @@ def p_error(p):
         print(f"Syntax error at '{p.value}'")
     else:
         print("Syntax error at EOF")
+
+parser = yacc.yacc()
+
+if __name__ == "__main__":
+    while True:
+        try:
+            text = input(">>> ")
+        except EOFError:
+            break
+
+        if not text:
+            continue
+
+        result = parser.parse(text, lexer=lexer)
+        print(result)

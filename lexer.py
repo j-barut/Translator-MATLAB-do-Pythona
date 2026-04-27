@@ -7,14 +7,14 @@ reserved = {
     'elseif': 'ELSEIF',
     'else': 'ELSE',
     'end': 'END',
+    'function': 'FUNCTION'
 }
 
 tokens = [
     'ID', 'NUMBER', 'STRING', 'TRANSPOSE',
     'PLUS', 'MINUS', 'MUL', 'DOTMUL', 'DIV', 'DOTDIV', 'POW', 'DOTPOW',
     'ASSIGN', 'EQ', 'NEQ', 'LT', 'LE', 'GT', 'GE',
-    'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'COMMA', 'SEMI', 'COLON',
-    'CONTINUATION'
+    'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'COMMA', 'SEMI', 'COLON'
 ] + list(reserved.values())
 
 t_DOTMUL   = r'\.\*'
