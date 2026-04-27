@@ -1,56 +1,67 @@
+import ply.lex as lex
 import ply.yacc as yacc
 import pprint
-from lexer import lexer
+import textwrap
+import lexer as matlab_lexer
 import parser as matlab_parser
 
 class MatlabParserTester:
-    def __init__(self):
-        """
-        Inicjalizacja testera.
-        """
-        self.lexer = lexer
-        self.parser = yacc.yacc(module=matlab_parser)
+    """
+    Statyczna klasa testująca dla parsera języka MATLAB.
+    Inicjalizuje lexer i parser tylko raz i udostępnia metody do testów.
+    """
+    
+    _lexer = lex.lex(module=matlab_lexer)
+    _parser = yacc.yacc(module=matlab_parser)
 
-    def test_lexer(self, code, example_name=""):
+    @classmethod
+    def run_test(cls, nazwa_testu: str, kod_matlab: str):
         """
-        Przepuszcza kod przez skaner (lexer) i wypisuje rozpoznane tokeny.
-        Pozwala sprawdzić, czy wszystkie słowa kluczowe i operatory są dobrze cięte.
+        Wspólna metoda uruchamiająca skaner i parser dla podanego kodu.
         """
-        print(f"--- TEST SKANERA (LEXERA): {example_name} ---")
-        self.lexer.input(code)
-        for tok in self.lexer:
-            print(f"Token: {tok.type:10} | Wartość: {tok.value:10} | Linia: {tok.lineno}")
-        print("-" * 50 + "\n")
-
-    def test_parser(self, code, example_name=""):
-        """
-        Przepuszcza kod przez parser i wypisuje wygenerowane 
-        Drzewo Składni Abstrakcyjnej (AST).
-        """
-        print(f"--- TEST PARSERA (DRZEWO AST): {example_name} ---")
-        result = self.parser.parse(code, lexer=self.lexer)
+        kod_czysty = textwrap.dedent(kod_matlab).strip()
         
-        pprint.pprint(result, width=80, depth=None)
-        print("-" * 50 + "\n")
+        print(f"\n{'='*60}")
+        print(f"=== TEST: {nazwa_testu.upper()} ===")
+        print(f"{'='*60}")
+        print("KOD MATLAB:\n")
+        print(kod_czysty)
+        print("-" * 60)
+        
+        try:
+            print("--- TOKENY (LEXER) ---")
+            cls._lexer.input(kod_czysty)
+            for tok in cls._lexer:
+                print(f"Token: {tok.type:10} | Wartość: {tok.value:10} | Linia: {tok.lineno}")
+            
+            print("\n--- DRZEWO AST (PARSER) ---")
+            result = cls._parser.parse(kod_czysty, lexer=cls._lexer)
+            pprint.pprint(result, width=80, depth=None)
+            
+        except Exception as e:
+            print(f"\n[BŁĄD] Wystąpił błąd podczas analizy składniowej: {e}")
 
-    def run_all_tests(self):
+    @staticmethod
+    def test_operacje_macierzowe():
         """
-        Główna metoda uruchamiająca zdefiniowane przykłady.
+        Test nr 1: Sprawdzenie poprawności parsowania definicji macierzy
+        oraz rozróżnienia operatorów macierzowych (*) i tablicowych (.*).
         """
-        # PRZYKŁAD 1: Testowanie matematyki wektorowej i różnic w operatorach
-        # Kluczowe dla translacji do numpy: rozróżnienie mnożenia macierzowego (*) 
-        # od mnożenia tablicowego/element-wise (.*) oraz transpozycji (').
-        example1 = '
+        kod = """
         A = [1, 2, 3; 4, 5, 6];
         B = [2, 2, 2; 3, 3, 3];
         C = A * B';
         D = A .* B;
-        '
+        """
+        MatlabParserTester.run_test("Operacje macierzowe", kod)
 
-        # PRZYKŁAD 2: Testowanie struktur sterujących i funkcji
-        # Testuje budowę bloków IF-ELSEIF-ELSE, pętli FOR z zakresami (colon_expr) 
-        # oraz poprawne parsowanie sygnatury funkcji MATLABa.
-        example2 = '
+    @staticmethod
+    def test_instrukcje_sterujace():
+        """
+        Test nr 2: Sprawdzenie poprawności konstrukcji bloku IF-ELSEIF-ELSE,
+        pętli FOR z wykorzystaniem zakresu (tzw. colon expression) oraz bloków funkcji.
+        """
+        kod = """
         function [res] = calculate_sum(n)
             res = 0;
             for i = 1:n
@@ -63,18 +74,17 @@ class MatlabParserTester:
                 end
             end
         end
-        '
+        """
+        MatlabParserTester.run_test("Struktury kontrolne i funkcje", kod)
 
-        print("=== URUCHAMIANIE PRZYKŁADU 1 ===")
-        print("KOD MATLAB:\n", example1.strip())
-        self.test_lexer(example1, "Operacje Macierzowe")
-        self.test_parser(example1, "Operacje Macierzowe")
+    @classmethod
+    def uruchom_wszystkie(cls):
+        """
+        Główna metoda uruchamiająca wszystkie testy po kolei.
+        """
+        cls.test_operacje_macierzowe()
+        cls.test_instrukcje_sterujace()
 
-        print("=== URUCHAMIANIE PRZYKŁADU 2 ===")
-        print("KOD MATLAB:\n", example2.strip())
-        self.test_lexer(example2, "Instrukcje i Funkcje")
-        self.test_parser(example2, "Instrukcje i Funkcje")
 
 if __name__ == "__main__":
-    tester = MatlabParserTester()
-    tester.run_all_tests()
+    MatlabParserTester.uruchom_wszystkie()
