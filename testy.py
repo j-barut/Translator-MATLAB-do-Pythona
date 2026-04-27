@@ -6,8 +6,7 @@ import parser as matlab_parser
 class MatlabParserTester:
     def __init__(self):
         """
-        Inicjalizacja testera. Budujemy parser na podstawie reguł 
-        zdefiniowanych w module parser.py.
+        Inicjalizacja testera.
         """
         self.lexer = lexer
         self.parser = yacc.yacc(module=matlab_parser)
@@ -41,17 +40,17 @@ class MatlabParserTester:
         # PRZYKŁAD 1: Testowanie matematyki wektorowej i różnic w operatorach
         # Kluczowe dla translacji do numpy: rozróżnienie mnożenia macierzowego (*) 
         # od mnożenia tablicowego/element-wise (.*) oraz transpozycji (').
-        example1 = '''
+        example1 = '
         A = [1, 2, 3; 4, 5, 6];
         B = [2, 2, 2; 3, 3, 3];
         C = A * B';
         D = A .* B;
-        '''
+        '
 
         # PRZYKŁAD 2: Testowanie struktur sterujących i funkcji
         # Testuje budowę bloków IF-ELSEIF-ELSE, pętli FOR z zakresami (colon_expr) 
         # oraz poprawne parsowanie sygnatury funkcji MATLABa.
-        example2 = '''
+        example2 = '
         function [res] = calculate_sum(n)
             res = 0;
             for i = 1:n
@@ -64,7 +63,7 @@ class MatlabParserTester:
                 end
             end
         end
-        '''
+        '
 
         print("=== URUCHAMIANIE PRZYKŁADU 1 ===")
         print("KOD MATLAB:\n", example1.strip())
