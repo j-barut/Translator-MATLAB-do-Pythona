@@ -32,6 +32,7 @@ Poniższa tabela przedstawia wszystkie tokeny obsługiwane przez lexer, wraz z o
 | | `ELSEIF` | `elseif` | Alternatywa warunkowa *elseif* |
 | | `ELSE` | `else` | Alternatywa *else* |
 | | `END` | `end` | Zakończenie bloku instrukcji |
+| | `FUNCTION` | `function` | Deklaracja funkcji |
 | **Identyfikatory** | `ID` | `[a-zA-Z][a-zA-Z0-9_]*` | Nazwy zmiennych (wymagana litera na początku) |
 | **Literały** | `NUMBER` | `(?:\d+\.\d+\|\.\d+\|\d+\.\|\d+)` | Liczby całkowite i zmiennoprzecinkowe |
 | | `STRING` | `("[^"]*")\|(\'(?:[^\']\|\'\')*\')` | Ciągi znaków z obsługą ucieczki `''` |
@@ -59,39 +60,3 @@ Poniższa tabela przedstawia wszystkie tokeny obsługiwane przez lexer, wraz z o
 | | `SEMI` | `;` (lub `\n`) | Średnik / Znak nowej linii (koniec instrukcji) |
 | | `COLON` | `:` | Dwukropek (zakresy) |
 | **Specjalne** | `CONTINUATION` | `\.\.\..*\n` | Trzy kropki ignorujące nową linię (kontynuacja kodu) |
-
-
-Kategoria,Nazwa tokena,Znak / Wyrażenie regularne,Opis
-Słowa kluczowe,FOR,for,Pętla for
-,WHILE,while,Pętla while
-,IF,if,Instrukcja warunkowa if
-,ELSEIF,elseif,Alternatywa warunkowa elseif
-,ELSE,else,Alternatywa else
-,END,end,Zakończenie bloku instrukcji
-,FUNCTION,function,Deklaracja funkcji
-Identyfikatory,ID,[a-zA-Z][a-zA-Z0-9_]*,Nazwy zmiennych (wymagana litera na początku)
-Literały,NUMBER,(?:\d+\.\d+|\.\d+|\d+\.|\d+),Liczby całkowite i zmiennoprzecinkowe
-,STRING,"(""[^""]*"")|(\'(?:[^\']|\'\')*\')",Ciągi znaków z obsługą ucieczki ''
-Operatory,PLUS,+,Dodawanie
-,MINUS,-,Odejmowanie
-,MUL,*,Mnożenie
-,DOTMUL,.*,Mnożenie tablicowe (element-wise)
-,DIV,/,Dzielenie
-,DOTDIV,./,Dzielenie tablicowe (element-wise)
-,POW,^,Potęgowanie
-,DOTPOW,.^,Potęgowanie tablicowe (element-wise)
-,TRANSPOSE,',Transpozycja
-,ASSIGN,=,Przypisanie
-Relacje,EQ,==,Równość
-,NEQ,~=,Nierówność
-,LT,<,Mniejsze
-,LE,<=,Mniejsze lub równe
-,GT,>,Większe
-,GE,>=,Większe lub równe
-Delimitery,LPAREN,(,Nawias okrągły otwierający
-,RPAREN,),Nawias okrągły zamykający
-,LBRACKET,[,Nawias kwadratowy otwierający
-,RBRACKET,],Nawias kwadratowy zamykający
-,COMMA,",",Przecinek (separator argumentów/elementów)
-,SEMI,;,Średnik (koniec instrukcji/nowy wiersz)
-,COLON,:,Dwukropek (operator zakresu)
