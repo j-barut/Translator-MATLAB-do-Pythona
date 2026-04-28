@@ -56,6 +56,10 @@ def p_assignment(p):
                   | ID ASSIGN expression'''
     p[0] = ('assign', p[1], p[3])
 
+def p_statement_empty(p):
+    '''statement : SEMI'''
+    p[0] = ('empty_statement',)
+
 # ---------------- IF ----------------
 
 def p_if_statement(p):
