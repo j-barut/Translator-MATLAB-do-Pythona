@@ -77,6 +77,23 @@ class MatlabParserTester:
         """
         MatlabParserTester.run_test("Struktury kontrolne i funkcje", kod)
 
+    @staticmethod
+    def test_wylapywanie_bledow():
+        """
+        Test nr 3: Sprawdzenie zachowania skanera i parsera w przypadku 
+        nieprawidłowego kodu źródłowego. Testuje obsługę nieznanych znaków 
+        oraz błędów składniowych.
+        """
+        kod = """
+        A = 5 @ 3;
+        
+        B = [1, 2 + * 3];
+        
+        C = (A + B ;
+        """
+
+        MatlabParserTester.run_test("Wyłapywanie błędów (Lexer i Parser)", kod)
+
     @classmethod
     def uruchom_wszystkie(cls):
         """
@@ -84,6 +101,7 @@ class MatlabParserTester:
         """
         cls.test_operacje_macierzowe()
         cls.test_instrukcje_sterujace()
+        cls.test_wylapywanie_bledow()
 
 
 if __name__ == "__main__":
