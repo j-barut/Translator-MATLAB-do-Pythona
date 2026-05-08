@@ -4,6 +4,7 @@ import pprint
 import textwrap
 import lexer as matlab_lexer
 import parser as matlab_parser
+from generator import MatlabToPythonGenerator
 
 class MatlabParserTester:
     """
@@ -37,6 +38,11 @@ class MatlabParserTester:
             print("\n--- DRZEWO AST (PARSER) ---")
             result = cls._parser.parse(kod_czysty, lexer=cls._lexer)
             pprint.pprint(result, width=80, depth=None)
+
+            print("\n--- WYGENEROWANY KOD PYTHON (BACKEND) ---")
+            generator = MatlabToPythonGenerator()
+            python_code = generator.generate(result)
+            print(python_code)
             
         except Exception as e:
             print(f"\n[BŁĄD] Wystąpił błąd podczas analizy składniowej: {e}")

@@ -274,7 +274,7 @@ def p_power(p):
 # ---------- UNARY ----------
 
 def p_unary(p):
-    '''unary : MINUS unary
+    '''unary : MINUS unary %prec UMINUS
              | NOT unary
              | postfix'''
     if len(p) == 3:
@@ -354,9 +354,9 @@ def p_expression_list(p):
 
 def p_error(p):
     if p:
-        print(f"Syntax error at token '{p.value}' (type={p.type}) line={p.lineno}")
+        print(f"Błąd składni w tokenie '{p.value}' (typ={p.type}) linia={p.lineno}")
     else:
-        print("Syntax error at EOF")
+        print("Błąd składni na końcu pliku")
 
 parser = yacc.yacc()
 
