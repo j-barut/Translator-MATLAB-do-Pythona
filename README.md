@@ -52,6 +52,11 @@ Poniższa tabela przedstawia wszystkie tokeny obsługiwane przez lexer, wraz z o
 | | `LE` | `<=` | Mniejsze lub równe |
 | | `GT` | `>` | Większe |
 | | `GE` | `>=` | Większe lub równe |
+| **Logiczne** | `AND` | `&` | Koniunkcja (AND) tablicowa / element-wise |
+| | `ANDAND` | `&&` | Koniunkcja (AND) ze zwarciem (short-circuit) |
+| | `OR` | `\|` | Alternatywa (OR) tablicowa / element-wise |
+| | `OROR` | `\|\|` | Alternatywa (OR) ze zwarciem (short-circuit) |
+| | `NOT` | `~` | Negacja logiczna (NOT) |
 | **Delimitery** | `LPAREN` | `(` | Nawias okrągły otwierający |
 | | `RPAREN` | `)` | Nawias okrągły zamykający |
 | | `LBRACKET` | `[` | Nawias kwadratowy otwierający |
