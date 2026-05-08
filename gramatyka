@@ -73,7 +73,23 @@ expression : colon_expr
 # ---------- RANGE (:) ----------
 
 colon_expr : colon_expr COLON colon_expr
-           | relation
+           | short_or
+
+
+# ---------- SHORT-CIRCUIT LOGICAL (&&, ||) ----------
+short_or : short_or OROR short_and
+         | short_and
+
+short_and : short_and ANDAND logical_or
+          | logical_or
+
+
+# ---------- ELEMENT-WISE LOGICAL (&, |) ----------
+logical_or : logical_or OR logical_and
+           | logical_and
+
+logical_and : logical_and AND relation
+            | relation
 
 
 # ---------- RELATIONS ----------
@@ -113,6 +129,7 @@ power : power POW power
 # ---------- UNARY ----------
 
 unary : MINUS unary
+      | NOT unary
       | postfix
 
 

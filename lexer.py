@@ -14,6 +14,7 @@ tokens = [
     'ID', 'NUMBER', 'STRING', 'TRANSPOSE',
     'PLUS', 'MINUS', 'MUL', 'DOTMUL', 'DIV', 'DOTDIV', 'POW', 'DOTPOW',
     'ASSIGN', 'EQ', 'NEQ', 'LT', 'LE', 'GT', 'GE',
+    'AND', 'ANDAND', 'OR', 'OROR', 'NOT',
     'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'COMMA', 'SEMI', 'COLON'
 ] + list(reserved.values())
 
@@ -34,6 +35,12 @@ t_TRANSPOSE= r"'"
 t_ASSIGN   = r'='
 t_LT       = r'<'
 t_GT       = r'>'
+
+t_ANDAND = r'&&'
+t_OROR   = r'\|\|'
+t_AND    = r'&'
+t_OR     = r'\|'
+t_NOT    = r'~'
 
 t_LPAREN   = r'\('
 t_RPAREN   = r'\)'

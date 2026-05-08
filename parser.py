@@ -4,12 +4,16 @@ from lexer import tokens
 from lexer import lexer
 
 precedence = (
+    ('left', 'OROR'),
+    ('left', 'ANDAND'),
+    ('left', 'OR'),
+    ('left', 'AND'),
     ('left', 'COLON'),
     ('left', 'EQ', 'NEQ', 'LT', 'LE', 'GT', 'GE'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MUL', 'DOTMUL',  'DIV', 'DOTDIV'),
     ('right', 'POW', 'DOTPOW'),
-    ('right', 'UMINUS'),
+    ('right', 'UMINUS', 'NOT'),
     ('left', 'TRANSPOSE'),
 )
 
@@ -168,9 +172,47 @@ def p_expression(p):
 
 def p_colon_expr(p):
     '''colon_expr : colon_expr COLON colon_expr
-                  | relation'''
+                  | short_or'''
     if len(p) == 4:
         p[0] = ('range', p[1], None, p[3])
+    else:
+        p[0] = p[1]
+
+
+# ---------- SHORT-CIRCUIT LOGICAL (&&, ||) ----------
+
+def p_short_or(p):
+    '''short_or : short_or OROR short_and
+                | short_and'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+def p_short_and(p):
+    '''short_and : short_and ANDAND logical_or
+                 | logical_or'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+
+# ---------- ELEMENT-WISE LOGICAL (&, |) ----------
+
+def p_logical_or(p):
+    '''logical_or : logical_or OR logical_and
+                  | logical_and'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+def p_logical_and(p):
+    '''logical_and : logical_and AND relation
+                   | relation'''
+    if len(p) == 4:
+        p[0] = ('binop', p[2], p[1], p[3])
     else:
         p[0] = p[1]
 
@@ -232,10 +274,11 @@ def p_power(p):
 # ---------- UNARY ----------
 
 def p_unary(p):
-    '''unary : MINUS unary %prec UMINUS
+    '''unary : MINUS unary
+             | NOT unary
              | postfix'''
     if len(p) == 3:
-        p[0] = ('uminus', p[2])
+        p[0] = ('unary', p[1], p[2])
     else:
         p[0] = p[1]
 
