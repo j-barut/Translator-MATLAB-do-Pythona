@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>MATLAB → Python Translator</title>
+
+    <link rel="stylesheet" href="/static/style.css"></head>
+<body>
+
+    <h1>MATLAB → Python Translator</h1>
+
+    <div class="editor-container">
+
+        <div class="editor-box">
+            <h2>MATLAB</h2>
+
+            <textarea id="matlab-code"></textarea>
+        </div>
+
+        <div class="editor-box">
+            <h2>Python</h2>
+
+            <textarea id="python-code"></textarea>
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <input type="file" id="file-input" hidden>
+
+        <button id="load-btn">
+            Load MATLAB File
+        </button>
+
+        <button id="translate-btn">
+            Translate
+        </button>
+
+        <button id="run-btn">
+            Run Python
+        </button>
+
+    </div>
+
+    <div class="output-box">
+
+        <h2>Output</h2>
+
+        <pre id="output"></pre>
+
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.editor-container {
+    display: flex;
+    gap: 20px;
+}
+
+.editor-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    height: 400px;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    resize: vertical;
+}
+
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.output-box {
+    margin-top: 20px;
+}
+
+pre {
+    background: #eee;
+    padding: 10px;
+    min-height: 100px;
+    white-space: pre-wrap;
+}
