@@ -56,6 +56,9 @@ class MatlabToPythonGenerator:
 
     def visit_id(self, node):
         return str(node[1])
+    
+    def visit_break(self, node):
+        return f"{self.get_indent()}break"
 
     def visit_assign(self, node):
         var_name = node[1]
@@ -70,21 +73,25 @@ class MatlabToPythonGenerator:
         left = self.visit(node[2])
         right = self.visit(node[3])
 
-        # Najważniejszy element projektu: mapowanie operatorów MATLABa na Pythona!
+        operators = {
+            '.*': '*',
+            '&&': 'and',
+            '||': 'or',
+            '~=': '!='
+        }
+        
         if op == '*':
-            return f"({left} @ {right})"
-        elif op == '.*':
-            return f"({left} * {right})"
+            return f"np.dot({left}, {right})"
+            
         elif op == '^':
             return f"np.linalg.matrix_power({left}, {right})"
+            
         elif op == '.^':
             return f"({left} ** {right})"
-        elif op == '&&':
-            return f"({left} and {right})"
-        elif op == '||':
-            return f"({left} or {right})"
-        elif op == '~=':
-            return f"({left} != {right})"
+            
+        elif op in operators:
+            return f"({left} {operators[op]} {right})"
+            
         else:
             return f"({left} {op} {right})"
 
@@ -161,6 +168,13 @@ class MatlabToPythonGenerator:
             func_body = f"{self.get_indent()}pass"
 
         return func_header + func_body
+    
+    def visit_function_call(self, node):
+        func_name = node[1]
+        args = node[2]
+        
+        args_str = ", ".join([str(self.visit(arg)) for arg in args])
+        return f"{func_name}({args_str})"
     
     def visit_while(self, node):
         condition = self.visit(node[1])

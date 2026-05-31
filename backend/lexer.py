@@ -7,7 +7,8 @@ reserved = {
     'elseif': 'ELSEIF',
     'else': 'ELSE',
     'end': 'END',
-    'function': 'FUNCTION'
+    'function': 'FUNCTION',
+    'break': 'BREAK'
 }
 
 tokens = [
@@ -80,7 +81,7 @@ def t_NEWLINE(t):
     return t
 
 def t_error(t):
-    print(f"Błąd leksykalny: nierozpoznany znak '{t.value[0]}' w linii {t.lexer.lineno}")
-    t.lexer.skip(1)
+    error_msg = f"Błąd leksykalny (Lexer Error): Nieoczekiwany znak '{t.value[0]}' w linii {t.lineno}"
+    raise ValueError(error_msg)
 
 lexer = lex.lex()

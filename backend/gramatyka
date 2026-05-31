@@ -11,6 +11,8 @@ statement : assignment
           | while_loop
           | function_declaration
           | expression_statement
+          | BREAK SEMI
+          | BREAK
 
 
 expression_statement : expression SEMI

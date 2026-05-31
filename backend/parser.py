@@ -1,4 +1,3 @@
-
 import ply.yacc as yacc
 from lexer import tokens
 from lexer import lexer
@@ -38,6 +37,11 @@ def p_statement(p):
                  | expression_statement'''
     p[0] = p[1]
 
+def p_statement_break(p):
+    '''statement : BREAK SEMI
+                 | BREAK'''
+    p[0] = ('break', p.lineno(1))
+
 def p_block(p):
     'block : statement_list'
     p[0] = p[1]
@@ -58,11 +62,12 @@ def p_empty(p):
 def p_assignment(p):
     '''assignment : ID ASSIGN expression SEMI
                   | ID ASSIGN expression'''
-    p[0] = ('assign', p[1], p[3])
+    p[0] = ('assign', p[1], p[3], p.lineno(1))
 
 def p_statement_empty(p):
     '''statement : SEMI'''
     p[0] = ('empty_statement',)
+
 
 # ---------------- IF ----------------
 
@@ -95,26 +100,17 @@ def p_elseif_clause(p):
     '''elseif_clause : ELSEIF expression block'''
     p[0] = ('elseif', p[2], p[3])
 
+
 # ---------------- LOOPS ----------------
 
 def p_for_loop(p):
     '''for_loop : FOR ID ASSIGN expression block END'''
     p[0] = ('for', p[2], p[4], p[5])
 
-# def p_range_expression(p):
-#     '''range_expression : expression COLON expression
-#                         | expression COLON expression COLON expression'''
-#     if len(p) == 4:
-#         # start : end
-#         p[0] = ('range', p[1], None, p[3])
-#     else:
-#         # start : step : end
-#         p[0] = ('range', p[1], p[3], p[5])
-
-
 def p_while_loop(p):
     '''while_loop : WHILE expression block END'''
     p[0] = ('while', p[2], p[3])
+
 
 # ---------------- FUNCTIONS ----------------
 
@@ -122,17 +118,15 @@ def p_function_declaration(p):
     '''function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN block END
                             | FUNCTION ID LPAREN arg_list RPAREN block END'''
     if len(p) == 10:
-        # FUNCTION return_vars = ID(args) body END
-        p[0] = ('function', p[4], p[6], p[8], p[2])
+        p[0] = ('function', p[4], p[6], p[8], p[2], p.lineno(1))
     else:
-        # FUNCTION ID(args) body END
-        p[0] = ('function', p[2], p[4], p[6], None)
+        p[0] = ('function', p[2], p[4], p[6], None, p.lineno(1))
 
 def p_return_vars(p):
     '''return_vars : ID
                    | LBRACKET id_list RBRACKET'''
     if len(p) == 2:
-        p[0] = [p[1]]   # zawsze lista
+        p[0] = [p[1]]
     else:
         p[0] = p[2]
 
@@ -160,6 +154,7 @@ def p_arguments(p):
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[3]]
+
 
 # ---------------- EXPRESSIONS ----------------
 
@@ -308,25 +303,24 @@ def p_primary(p):
         elif isinstance(p[1], str) and p.slice[1].type == 'STRING':
             p[0] = ('string', p[1])
         elif isinstance(p[1], str):
-            p[0] = ('id', p[1])
+            p[0] = ('id', p[1], p.lineno(1))
         else:
             p[0] = p[1]
     else:
         p[0] = p[2]
+
+def p_primary_function_call(p):
+    '''primary : ID LPAREN arg_list RPAREN'''
+    p[0] = ('function_call', p[1], p[3], p.lineno(1))
 
 # ---------------- MATRIX ----------------
 def p_matrix(p):
     '''matrix : LBRACKET RBRACKET
               | LBRACKET row_list RBRACKET'''
     if len(p) == 3:
-        p[0] = ('matrix', [])
+        p[0] = ('matrix', [], p.lineno(1))
     else:
-        p[0] = ('matrix', p[2])
-
-
-# def p_expression_matrix(p):
-#     '''expression : matrix'''
-#     p[0] = p[1]
+        p[0] = ('matrix', p[2], p.lineno(1))
 
 def p_row_list(p):
     '''row_list : row
@@ -354,9 +348,10 @@ def p_expression_list(p):
 
 def p_error(p):
     if p:
-        print(f"Błąd składni w tokenie '{p.value}' (typ={p.type}) linia={p.lineno}")
+        error_msg = f"Błąd składniowy (Syntax Error): Nieoczekiwany token '{p.value}' w linii {p.lineno}"
     else:
-        print("Błąd składni na końcu pliku")
+        error_msg = "Błąd składniowy (Syntax Error): Niespodziewany koniec pliku (zła struktura bloków/nawiasów)"
+    raise ValueError(error_msg)
 
 parser = yacc.yacc()
 
