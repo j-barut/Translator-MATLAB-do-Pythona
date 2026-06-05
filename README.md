@@ -3,7 +3,7 @@
 ## 1. Informacje ogólne
 
 **Temat projektu:**  
-Kompilator źródło–źródło (translator) podzbioru języka MATLAB do języka Python.
+Translator MATLAB do języka Python.
 
 **Autorzy:**  
 Justyna Barut  
@@ -30,6 +30,7 @@ Projekt obejmuje pełny proces kompilacji:
 3. Budowę drzewa AST
 4. Analizę semantyczną
 5. Generowanie kodu Python
+7. Uruchomienia kodu Python
 
 ---
 
@@ -70,21 +71,13 @@ Wynikiem działania translatora jest:
 - zachowanie semantyki operacji macierzowych MATLABa,
 - możliwość natychmiastowego uruchomienia wygenerowanego kodu.
 
-Program dostępny jest przez interfejs WWW oparty o:
-
-- HTML
-- CSS
-- JavaScript
-- CodeMirror
-
 ---
 
 ## Technologia implementacji
 
 ### Backend
 
-- Python 3.12+
-- Flask
+- Python 3.14+
 - PLY (Python Lex-Yacc)
 - NumPy
 
@@ -181,8 +174,6 @@ Jego zadaniem jest podział kodu źródłowego MATLAB na tokeny rozpoznawane prz
 # 4. Gramatyka parsera
 
 Parser został zaimplementowany przy użyciu `ply.yacc`.
-
-Wykorzystywany jest algorytm parsowania LALR(1).
 
 ---
 
@@ -467,7 +458,7 @@ Aplikacja udostępnia:
 - edytor Python
 - numerację linii
 - podświetlanie składni
-- ładowanie plików .m
+- ładowanie plików
 - tłumaczenie kodu
 - uruchamianie kodu Python
 - prezentację błędów
@@ -606,29 +597,3 @@ else
     disp('Wynik jest mały');
 end
 ```
-
----
-
-# 10. Aktualny stan projektu
-
-Zaimplementowano:
-
-- analizator leksykalny PLY
-- parser LALR(1)
-- AST
-- analizator semantyczny
-- generator kodu Python
-- tłumaczenie funkcji MATLAB → Python
-- obsługę macierzy NumPy
-- interfejs WWW
-- integrację z CodeMirror
-- wykonywanie wygenerowanego kodu Python
-
-Planowane rozszerzenia:
-
-- indeksowanie macierzy
-- zakresy postaci 1:2:10
-- obsługa większej liczby funkcji MATLAB
-- dokładniejsze komunikaty błędów z pozycją kolumny
-- eksport wygenerowanego kodu do pliku `.py`
-- kolorowanie błędnych linii w edytorze
