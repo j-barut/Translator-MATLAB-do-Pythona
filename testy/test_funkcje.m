@@ -17,3 +17,5 @@ function [res] = skomplikowana_funkcja(n, m)
         end
     end
 end
+
+disp(skomplikowana_funkcja(2, 3))
