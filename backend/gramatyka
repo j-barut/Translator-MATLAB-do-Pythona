@@ -13,10 +13,17 @@ statement : assignment
           | expression_statement
           | BREAK SEMI
           | BREAK
+          | SEMI
 
 
-expression_statement : expression SEMI
-                     | expression
+expression_statement : expression opt_semi
+
+
+opt_semi : SEMI
+         | empty
+
+
+empty :
 
 
 assignment : ID ASSIGN expression SEMI
@@ -25,30 +32,35 @@ assignment : ID ASSIGN expression SEMI
 
 # ---------------- IF ----------------
 
-if_statement : IF expression statement_list END
-             | IF expression statement_list ELSE statement_list END
-             | IF expression statement_list elseif_list END
-             | IF expression statement_list elseif_list ELSE statement_list END
+if_statement : IF expression block END
+             | IF expression block ELSE block END
+             | IF expression block elseif_list END
+             | IF expression block elseif_list ELSE block END
 
 
 elseif_list : elseif_list elseif_clause
             | elseif_clause
 
 
-elseif_clause : ELSEIF expression statement_list
+elseif_clause : ELSEIF expression block
+
+
+# ---------------- BLOCK ----------------
+
+block : statement_list
 
 
 # ---------------- LOOPS ----------------
 
-for_loop : FOR ID ASSIGN expression statement_list END
+for_loop : FOR ID ASSIGN expression block END
 
-while_loop : WHILE expression statement_list END
+while_loop : WHILE expression block END
 
 
 # ---------------- FUNCTIONS ----------------
 
-function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN statement_list END
-                     | FUNCTION ID LPAREN arg_list RPAREN statement_list END
+function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN block END
+                     | FUNCTION ID LPAREN arg_list RPAREN block END
 
 
 return_vars : ID
@@ -79,16 +91,20 @@ colon_expr : colon_expr COLON colon_expr
 
 
 # ---------- SHORT-CIRCUIT LOGICAL (&&, ||) ----------
+
 short_or : short_or OROR short_and
          | short_and
+
 
 short_and : short_and ANDAND logical_or
           | logical_or
 
 
 # ---------- ELEMENT-WISE LOGICAL (&, |) ----------
+
 logical_or : logical_or OR logical_and
            | logical_and
+
 
 logical_and : logical_and AND relation
             | relation
@@ -147,8 +163,8 @@ primary : ID
         | NUMBER
         | STRING
         | LPAREN expression RPAREN
-        | function_call
         | matrix
+        | ID LPAREN arg_list RPAREN
 
 
 # ---------------- MATRIX ----------------
@@ -166,9 +182,3 @@ row : expression_list
 
 expression_list : expression
                 | expression_list COMMA expression
-
-
-# ---------------- FUNCTION CALL ----------------
-
-function_call : ID LPAREN arg_list RPAREN
-              | ID LPAREN RPAREN

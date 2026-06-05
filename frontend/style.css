@@ -1,11 +1,15 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     margin: 20px;
 }
 
 h1 {
     text-align: center;
 }
+
+/* =========================
+   EDITORS
+   ========================= */
 
 .editor-container {
     display: flex;
@@ -18,13 +22,42 @@ h1 {
     flex-direction: column;
 }
 
-textarea {
-    height: 400px;
-    font-family: monospace;
-    font-size: 14px;
-    padding: 10px;
-    resize: vertical;
+.editor-box h2 {
+    margin-bottom: 10px;
 }
+
+/* =========================
+   CODEMIRROR
+   ========================= */
+
+.CodeMirror {
+    height: 500px;
+    border: 1px solid #ccc;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 14px;
+}
+
+/* Bardzo ważne */
+.CodeMirror pre,
+.CodeMirror-line,
+.CodeMirror-line-like {
+    min-height: 0 !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+    padding: 0 !important;
+}
+
+.CodeMirror-lines {
+    padding: 4px 0 !important;
+}
+
+.CodeMirror-linenumber {
+    line-height: 1.4 !important;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
 
 .buttons {
     margin-top: 20px;
@@ -37,13 +70,22 @@ button {
     cursor: pointer;
 }
 
+/* =========================
+   OUTPUT
+   ========================= */
+
 .output-box {
     margin-top: 20px;
 }
 
-pre {
+/* UWAGA:
+   stylujemy tylko output,
+   NIE wszystkie <pre>
+*/
+#output {
     background: #eee;
     padding: 10px;
     min-height: 100px;
     white-space: pre-wrap;
+    border: 1px solid #ccc;
 }

@@ -1,3 +1,5 @@
+from matlab_builtins import MATLAB_RESERVED_NAMES
+
 class SemanticAnalyzer:
     def __init__(self):
         self.errors = []
@@ -5,11 +7,7 @@ class SemanticAnalyzer:
         self.functions = set()
         self.in_loop = 0
         
-        self.reserved_builtins = {
-            'zeros', 'ones', 'eye', 'rand', 'linspace',
-            'sin', 'cos', 'tan', 'exp', 'log', 'log10', 'sqrt',
-            'disp', 'plot', 'sum', 'mean', 'max', 'min', 'length', 'size'
-        }
+        self.reserved_builtins = MATLAB_RESERVED_NAMES
 
     def analyze(self, ast):
         """Główna metoda uruchamiająca analizę."""

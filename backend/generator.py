@@ -1,3 +1,5 @@
+from matlab_builtins import MATLAB_BUILTINS
+
 class MatlabToPythonGenerator:
     def __init__(self):
         """
@@ -5,6 +7,7 @@ class MatlabToPythonGenerator:
         indent_level śledzi aktualny poziom zagnieżdżenia kodu.
         """
         self.indent_level = 0
+        self.function_translations = MATLAB_BUILTINS
 
     def get_indent(self):
         """Zwraca odpowiednią liczbę spacji dla obecnego poziomu wcięcia."""
@@ -168,13 +171,22 @@ class MatlabToPythonGenerator:
             func_body = f"{self.get_indent()}pass"
 
         return func_header + func_body
-    
+
     def visit_function_call(self, node):
         func_name = node[1]
         args = node[2]
-        
-        args_str = ", ".join([str(self.visit(arg)) for arg in args])
-        return f"{func_name}({args_str})"
+
+        args_str = ", ".join(
+            self.visit(arg)
+            for arg in args
+        )
+
+        translated_name = self.function_translations.get(
+            func_name,
+            func_name
+        )
+
+        return f"{translated_name}({args_str})"
     
     def visit_while(self, node):
         condition = self.visit(node[1])
