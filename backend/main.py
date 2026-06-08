@@ -38,6 +38,8 @@ def translate(data: CodeInput):
     matlab_code = data.code
 
     try:
+        lexer.lineno = 1
+        
         ast = parser.parse(matlab_code, lexer=lexer)
 
         if not ast:
