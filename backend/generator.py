@@ -38,6 +38,8 @@ class MatlabToPythonGenerator:
                 
                 result = self.visit(statement)
                 if result:
+                    if isinstance(statement, tuple) and statement[0] not in ('assign', 'if', 'for', 'while', 'function', 'break'):
+                        result = self.get_indent() + str(result)
                     lines.append(result)
             return "\n".join(lines)
 
@@ -45,7 +47,6 @@ class MatlabToPythonGenerator:
             return str(node)
 
         node_type = node[0]
-
         method_name = f'visit_{node_type}'
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
@@ -62,6 +63,9 @@ class MatlabToPythonGenerator:
     
     def visit_break(self, node):
         return f"{self.get_indent()}break"
+    
+    def visit_string(self, node):
+        return str(node[1])
 
     def visit_assign(self, node):
         var_name = node[1]
@@ -212,7 +216,7 @@ class MatlabToPythonGenerator:
         code += if_body + "\n"
         self.indent_level -= 1
 
-        if len(node) > 3 and node[3]:
+        if len(node) > 3 and node[3] and isinstance(node[3], list):
             for elseif_node in node[3]:
                 elif_cond = self.visit(elseif_node[1])
                 code += f"{self.get_indent()}elif {elif_cond}:\n"

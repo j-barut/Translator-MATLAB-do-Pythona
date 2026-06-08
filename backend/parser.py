@@ -80,7 +80,7 @@ def p_if_statement(p):
         p[0] = ('if', p[2], p[3], None, None)
 
     elif len(p) == 7:
-        if p[4] == 'ELSE':
+        if p[4] == 'else':
             p[0] = ('if', p[2], p[3], None, p[5])
         else:
             p[0] = ('if', p[2], p[3], p[4], None)
