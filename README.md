@@ -177,10 +177,8 @@ Parser został zaimplementowany przy użyciu `ply.yacc`.
 
 program : statement_list
 
-
 statement_list : statement
                | statement_list statement
-
 
 statement : assignment
           | if_statement
@@ -192,20 +190,15 @@ statement : assignment
           | BREAK
           | SEMI
 
-
 expression_statement : expression opt_semi
-
 
 opt_semi : SEMI
          | empty
 
-
 empty :
-
 
 assignment : ID ASSIGN expression SEMI
            | ID ASSIGN expression
-
 
 # ---------------- IF ----------------
 
@@ -214,18 +207,14 @@ if_statement : IF expression block END
              | IF expression block elseif_list END
              | IF expression block elseif_list ELSE block END
 
-
 elseif_list : elseif_list elseif_clause
             | elseif_clause
 
-
 elseif_clause : ELSEIF expression block
-
 
 # ---------------- BLOCK ----------------
 
 block : statement_list
-
 
 # ---------------- LOOPS ----------------
 
@@ -233,59 +222,47 @@ for_loop : FOR ID ASSIGN expression block END
 
 while_loop : WHILE expression block END
 
-
 # ---------------- FUNCTIONS ----------------
 
 function_declaration : FUNCTION return_vars ASSIGN ID LPAREN arg_list RPAREN block END
                      | FUNCTION ID LPAREN arg_list RPAREN block END
 
-
 return_vars : ID
             | LBRACKET id_list RBRACKET
-
 
 id_list : ID
         | id_list COMMA ID
 
-
 arg_list :
          | arguments
-
 
 arguments : expression
           | arguments COMMA expression
 
-
 # ---------------- EXPRESSIONS ----------------
 
 expression : colon_expr
-
 
 # ---------- RANGE (:) ----------
 
 colon_expr : colon_expr COLON colon_expr
            | short_or
 
-
 # ---------- SHORT-CIRCUIT LOGICAL (&&, ||) ----------
 
 short_or : short_or OROR short_and
          | short_and
 
-
 short_and : short_and ANDAND logical_or
           | logical_or
-
 
 # ---------- ELEMENT-WISE LOGICAL (&, |) ----------
 
 logical_or : logical_or OR logical_and
            | logical_and
 
-
 logical_and : logical_and AND relation
             | relation
-
 
 # ---------- RELATIONS ----------
 
@@ -297,13 +274,11 @@ relation : relation EQ relation
          | relation GE relation
          | additive
 
-
 # ---------- ADD / SUB ----------
 
 additive : additive PLUS additive
          | additive MINUS additive
          | multiplicative
-
 
 # ---------- MUL / DIV ----------
 
@@ -313,13 +288,11 @@ multiplicative : multiplicative MUL multiplicative
                | multiplicative DOTDIV multiplicative
                | power
 
-
 # ---------- POW ----------
 
 power : power POW power
       | power DOTPOW power
       | unary
-
 
 # ---------- UNARY ----------
 
@@ -327,12 +300,10 @@ unary : MINUS unary
       | NOT unary
       | postfix
 
-
 # ---------- TRANSPOSE ----------
 
 postfix : postfix TRANSPOSE
         | primary
-
 
 # ---------- PRIMARY ----------
 
@@ -343,23 +314,18 @@ primary : ID
         | matrix
         | ID LPAREN arg_list RPAREN
 
-
 # ---------------- MATRIX ----------------
 
 matrix : LBRACKET RBRACKET
        | LBRACKET row_list RBRACKET
 
-
 row_list : row
          | row_list SEMI row
 
-
 row : expression_list
-
 
 expression_list : expression
                 | expression_list COMMA expression
-
 ---
 
 ## Obsługiwane konstrukcje
