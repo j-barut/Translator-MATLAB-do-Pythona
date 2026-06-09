@@ -14,7 +14,7 @@ end
 a = 5;
 b = silnia(a);
 if b > 100
-    disp('Wynik jest duży');
+    disp('Wynik jest duzy');
 else
-    disp('Wynik jest mały');
+    disp('Wynik jest maly');
 end
